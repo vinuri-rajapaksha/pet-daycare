@@ -16,6 +16,12 @@ class Booking extends Model
     {
         return $this->belongsTo(Pet::class);
     }
+
+    public function scopeUpcoming($query)
+    {
+        return $query->where('booking_date', '>=', now()->toDateString())
+            ->where('status', '!=', 'cancelled');
+    }
 }
 
 // This says "a Booking belongs to one Pet." So $booking->pet gets you the pet, 

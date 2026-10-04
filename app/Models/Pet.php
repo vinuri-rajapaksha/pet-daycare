@@ -22,6 +22,15 @@ class Pet extends Model
     {
         return $this->hasMany(Booking::class);
     }
+
+    public function getAgeLabelAttribute()
+    {
+        if (!$this->age) {
+            return 'Age not specified';
+        }
+
+        return $this->age . ' ' . ($this->age == 1 ? 'year' : 'years') . ' old';
+    }
 }
 
 // This is the reverse — "a Pet has many Bookings" 

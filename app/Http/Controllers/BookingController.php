@@ -34,22 +34,24 @@ class BookingController extends Controller
             'contact_phone' => 'nullable|string|max:20',
         ]);
 
-        foreach ($validated['pet_ids'] as $petId) {
-            $pet = Pet::findOrFail($petId);
+        \Illuminate\Support\Facades\DB::transaction(function () use ($validated) {
+            foreach ($validated['pet_ids'] as $petId) {
+                $pet = Pet::findOrFail($petId);
 
-            if ($pet->user_id !== auth()->id()) {
-                abort(403);
+                if ($pet->user_id !== auth()->id()) {
+                    abort(403);
+                }
+
+                Booking::create([
+                    'pet_id' => $pet->id,
+                    'booking_date' => $validated['booking_date'],
+                    'service_type' => $validated['service_type'],
+                    'duration' => $validated['duration'],
+                    'contact_phone' => $validated['contact_phone'] ?? null,
+                    'status' => 'pending',
+                ]);
             }
-
-            Booking::create([
-                'pet_id' => $pet->id,
-                'booking_date' => $validated['booking_date'],
-                'service_type' => $validated['service_type'],
-                'duration' => $validated['duration'],
-                'contact_phone' => $validated['contact_phone'] ?? null,
-                'status' => 'pending',
-            ]);
-        }
+        });
 
         return redirect()->route('bookings.index');
     }

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('pet_id')->constrained()->onDelete('cascade'); // links this booking to a specific pet. If that pet is ever deleted, its bookings get deleted too.
             $table->date('booking_date'); // the date for which the booking is made. stores just a date (no time), e.g. 2026-09-20
             $table->string('status')->default('pending'); // the status of the booking, e.g. pending, confirmed, cancelled
-            $table->timestamps();
+            $table->timestamps(); //automatically keep track of when each record was created and when it was last updated.
         });
     }
 

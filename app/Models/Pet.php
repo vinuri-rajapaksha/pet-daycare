@@ -30,6 +30,7 @@ class Pet extends Model
         }
 
         return $this->age . ' ' . ($this->age == 1 ? 'year' : 'years') . ' old';
+        //It converts the pet's age into a user-friendly text
     }
 }
 

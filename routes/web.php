@@ -7,6 +7,10 @@ use App\Http\Controllers\BookingController;
 Route::get('/', function () {
     return view('welcome');
 });
+// This is the public home page. Route::get means "when someone visits with a GET request", and / is the 
+// homepage. It shows resources/views/welcome.blade.php, your landing page with Log in and Register. 
+// It has no protection because anyone should be able to see it.
+
 
 Route::middleware([
     'auth:sanctum',
@@ -19,8 +23,8 @@ Route::middleware([
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::resource('pets', PetController::class);
-    Route::resource('bookings', BookingController::class);
+    Route::resource('pets', PetController::class); //GET, POST, DELETE and PATCH
+    Route::resource('bookings', BookingController::class); //GET, POST, DELETE and PATCH
 });
 
 // Route::middleware(['auth', 'verified']) — this is the "you must be logged in" gate. 

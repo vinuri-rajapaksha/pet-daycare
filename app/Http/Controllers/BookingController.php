@@ -8,9 +8,9 @@ use Illuminate\Http\Request;
 
 class BookingController extends Controller
 {
-    public function index()
+    public function index() //show the bookings page
     {
-        $pets = auth()->user()->pets;
+        $pets = auth()->user()->pets; //Gets the logged-in user's pets only. The page needs them for the checkboxes in the booking form.
 
         $bookings = Booking::whereIn('pet_id', $pets->pluck('id'))
             ->with('pet')
@@ -22,11 +22,15 @@ class BookingController extends Controller
             'bookings' => $bookings,
         ]);
     }
+    // A booking belongs to a pet, not to a user. So you first collect the ids of the user's pets (pluck('id')), 
+    // then ask for bookings whose pet_id is in that list (whereIn). That is how one user only sees their own bookings.
+    // with('pet') is eager loading. It loads each booking's pet in one extra query, instead of one query per booking 
+    // orderBy('booking_date') sorts by date.
 
-    public function store(Request $request)
+    public function store(Request $request) // save a new booking
     {
         $validated = $request->validate([
-            'pet_ids' => 'required|array|min:1',
+            'pet_ids' => 'required|array|min:1', //at least one pet must be ticked
             'pet_ids.*' => 'exists:pets,id',
             'booking_date' => 'required|date|after_or_equal:today',
             'service_type' => 'required|in:daycare,overnight,grooming',
@@ -51,6 +55,9 @@ class BookingController extends Controller
                     'status' => 'pending',
                 ]);
             }
+            // A transaction means all or nothing. Imagine a user ticks 3 pets. If the first booking saves and the 
+            // second fails, without a transaction they'd have a half-saved booking. With a transaction, if anything 
+            // fails, the database undoes everything and nothing is saved. so the data never ends up half-written.
         });
 
         return redirect()->route('bookings.index');

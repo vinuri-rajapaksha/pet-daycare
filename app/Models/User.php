@@ -44,6 +44,8 @@ class User extends Authenticatable
         'two_factor_recovery_codes',
         'two_factor_secret',
     ];
+    // a list of things Laravel should keep hidden when sending/displaying model data.
+    // It prevents sensitive data from being exposed in API responses or when the model is converted to an array or JSON.
 
     /**
      * The accessors to append to the model's array form.
@@ -66,6 +68,7 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    //The casts() method tells Laravel how to convert or handle specific model attributes,
 
     public function pets(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
